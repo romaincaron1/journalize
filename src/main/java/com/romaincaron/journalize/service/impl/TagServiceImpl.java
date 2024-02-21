@@ -1,39 +1,39 @@
 package com.romaincaron.journalize.service.impl;
 
-import com.romaincaron.journalize.model.Role;
-import com.romaincaron.journalize.repository.RoleRepository;
-import com.romaincaron.journalize.service.RoleService;
+import com.romaincaron.journalize.model.Tag;
+import com.romaincaron.journalize.repository.TagRepository;
+import com.romaincaron.journalize.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TagServiceImpl implements RoleService {
-    private RoleRepository tagRepository;
+public class TagServiceImpl implements TagService {
+    private TagRepository tagRepository;
 
     @Autowired
-    public TagServiceImpl(RoleRepository tagRepository) {
+    public TagServiceImpl(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
     }
 
     @Override
-    public List<Role> getRoles() {
+    public List<Tag> getTags() {
         return this.tagRepository.findAll();
     }
 
     @Override
-    public Role persist(Role tag) {
+    public Tag persist(Tag tag) {
         return this.tagRepository.save(tag);
     }
 
     @Override
-    public Role getRole(Long id) {
+    public Tag getTag(Long id) {
         return this.tagRepository.findById(id).orElseThrow();
     }
 
     @Override
-    public Role update(Role tag) {
+    public Tag update(Tag tag) {
         return this.tagRepository.save(tag);
     }
 
