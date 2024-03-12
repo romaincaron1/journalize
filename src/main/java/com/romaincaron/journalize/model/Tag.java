@@ -16,9 +16,11 @@ public class Tag {
     @Column(name = "tag_name")
     private String tagName;
 
-    // articles
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private Set<Article> articles = new HashSet<>();
+
+    @Column(name = "score")
+    private int score;
 
     public Tag() {
     }
@@ -55,5 +57,12 @@ public class Tag {
 
     public void setArticles(Set<Article> articles) {
         this.articles = articles;
+    }
+
+    public int getScore() {
+        return score;
+    }
+    public void setScore(int score) {
+        this.score = score;
     }
 }

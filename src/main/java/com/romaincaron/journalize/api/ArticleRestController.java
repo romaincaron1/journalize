@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/article")
 public class ArticleRestController {
-    private ArticleService articleService;
+    private final ArticleService articleService;
 
     @Autowired
     public ArticleRestController(ArticleService articleService) {
@@ -24,7 +24,7 @@ public class ArticleRestController {
     public ResponseEntity<List<Article>> getArticles()
     {
         List<Article> articles = articleService.getArticles();
-        return new ResponseEntity<List<Article>>(articles, HttpStatus.CREATED);
+        return new ResponseEntity<List<Article>>(articles, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
@@ -44,7 +44,7 @@ public class ArticleRestController {
     public ResponseEntity<Article> update(@RequestBody Article article)
     {
         Article updatedArticle = articleService.update(article);
-        return new ResponseEntity<Article>(updatedArticle, HttpStatus.CREATED);
+        return new ResponseEntity<Article>(updatedArticle, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

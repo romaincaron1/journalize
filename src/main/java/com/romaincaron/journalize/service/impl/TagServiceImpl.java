@@ -42,4 +42,16 @@ public class TagServiceImpl implements TagService {
         tagRepository.findById(id).orElseThrow();
         tagRepository.deleteById(id);
     }
+
+    @Override
+    public void deleteAll() {
+        tagRepository.deleteAll();
+    }
+
+    @Override
+    public List<Tag> getTopTags() {
+        List<Tag> tags = this.tagRepository.findAll();
+        tags = tags.stream().sorted((t1, t2) -> t2.getScore() - t1.getScore()).toList();
+        return tags;
+    }
 }

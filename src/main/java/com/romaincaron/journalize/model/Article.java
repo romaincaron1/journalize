@@ -16,7 +16,7 @@ public class Article {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "date")
@@ -33,6 +33,19 @@ public class Article {
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private Category category;
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    private Set<Comment> comments = new HashSet<>();
+
+    @Column(name = "impressions", nullable = false)
+    private int impressions = 0;
+
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
     public Article() {
     }
@@ -93,6 +106,52 @@ public class Article {
     public void removeTag(Tag tag) {
         tags.remove(tag);
         tag.getArticles().remove(this);
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setArticle(this);
+    }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setArticle(null);
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public int getImpressions() {
+        return impressions;
+    }
+
+    public void setImpressions(int impressions) {
+        this.impressions = impressions;
+    }
+
+    public void incrementImpressions() {
+        this.impressions++;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAtNow() {
+        this.updatedAt = new Date();
     }
 
     public String toString() {
