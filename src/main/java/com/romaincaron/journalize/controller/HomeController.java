@@ -42,10 +42,19 @@ public class HomeController {
         model.addAttribute("top5ArticlesByCategory", top5ArticlesByCategory);
 
         // lastArticles
-        List<Article> lastArticles = articleService.getLastArticles();
+        List<Article> lastArticles = articleService.getLast5Articles();
         model.addAttribute("lastArticles", lastArticles);
 
         return "index";
+    }
+
+    @GetMapping("/recent")
+    public String recent(Model model) {
+        List<Article> lastArticles = articleService.getLastArticles();
+        List<Article> last5Articles = articleService.getLast5Articles();
+        model.addAttribute("articles", lastArticles);
+        model.addAttribute("last5Articles", last5Articles);
+        return "recent";
     }
 
 }

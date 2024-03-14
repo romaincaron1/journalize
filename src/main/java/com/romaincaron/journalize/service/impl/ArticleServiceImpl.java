@@ -53,7 +53,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<Article> getLastArticles() {
+    public List<Article> getLast5Articles() {
         return articleRepository.findTop5ByOrderByDateDesc();
     }
 
@@ -65,5 +65,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<Article> getArticlesByCategory(Category category) {
         return articleRepository.findArticlesByCategory(category);
+    }
+
+    // findLastArticles
+    @Override
+    public List<Article> getLastArticles() {
+        return articleRepository.findLastArticles();
     }
 }

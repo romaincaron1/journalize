@@ -1,6 +1,7 @@
 package com.romaincaron.journalize.controller;
 
 import com.romaincaron.journalize.model.Article;
+import com.romaincaron.journalize.model.Category;
 import com.romaincaron.journalize.model.Tag;
 import com.romaincaron.journalize.service.ArticleService;
 import com.romaincaron.journalize.service.CategoryService;
@@ -10,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -51,11 +51,13 @@ public class ArticleController {
         article.setTitle(title);
         article.setContent(content);
         article.setCategory(categoryService.getCategory(categoryId));
-        for (Long tagId : tags) {
-            Tag tag = tagService.getTag(tagId);
-            article.addTag(tag);
-            tag.addArticle(article);
-            tagService.persist(tag);
+        if (tags != null) {
+            for (Long tagId : tags) {
+                Tag tag = tagService.getTag(tagId);
+                article.addTag(tag);
+                tag.addArticle(article);
+                tagService.persist(tag);
+            }
         }
         article.setUser(null);
         article.setDate(new Date());
@@ -100,5 +102,15 @@ public class ArticleController {
         return "redirect:/";
     }
 
+    @GetMapping("/categories/articles")
+    public String showArticlesByCategory(@RequestParam Long categoryId, Model model) {
+        Category category = categoryService.getCategory(categoryId);
+        List<Article> articles = articleService.getArticlesByCategory(category);
+        List<Article> lastArticles = articleService.getLast5Articles();
+        model.addAttribute("lastArticles", lastArticles);
+        model.addAttribute("category", category);
+        model.addAttribute("articles", articles);
+        return "article/articles";
+    }
 
 }

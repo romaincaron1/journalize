@@ -14,4 +14,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     List<Article> findTopArticlesByCategoryOrderByImpressionsDesc(Category category, Pageable pageable);
     @Query("SELECT a FROM article a WHERE a.category = ?1 ORDER BY a.impressions DESC")
     List<Article> findArticlesByCategory(Category category);
+    @Query("SELECT a FROM article a ORDER BY a.updatedAt DESC")
+    List<Article> findLastArticles();
 }

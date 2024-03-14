@@ -12,7 +12,8 @@ public interface ArticleService {
     public Article update(Article article);
     public void delete(Long id);
     public void deleteAll();
-    public List<Article> getLastArticles();
+    public List<Article> getLast5Articles();
     List<Article> getTopArticlesByCategory(Category category, int i);
     List<Article> getArticlesByCategory(Category category);
+    public List<Article> getLastArticles();
 }
