@@ -6,6 +6,7 @@ import com.romaincaron.journalize.model.Tag;
 import com.romaincaron.journalize.service.ArticleService;
 import com.romaincaron.journalize.service.CategoryService;
 import com.romaincaron.journalize.service.TagService;
+import com.romaincaron.journalize.service.UserSecurityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,17 +18,20 @@ public class AdminController {
     CategoryService categoryService;
     TagService tagService;
     ArticleService articleService;
+    UserSecurityService UserSecurityService;
 
-    public AdminController(CategoryService categoryService, TagService tagService, ArticleService articleService) {
+    public AdminController(CategoryService categoryService, TagService tagService, ArticleService articleService, UserSecurityService UserSecurityService) {
         this.categoryService = categoryService;
         this.tagService = tagService;
         this.articleService = articleService;
+        this.UserSecurityService = UserSecurityService;
     }
 
     @GetMapping("/admin")
     public String index(Model model) {
         model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("tags", tagService.getTags());
+        model.addAttribute("user", UserSecurityService.getCurrentUser());
         return "admin/index";
     }
 
@@ -74,6 +78,7 @@ public class AdminController {
             return "redirect:/admin";
         }
         model.addAttribute("category", category);
+        model.addAttribute("user", UserSecurityService.getCurrentUser());
         return "admin/editCategory";
     }
 
@@ -93,6 +98,7 @@ public class AdminController {
             return "redirect:/admin";
         }
         model.addAttribute("tag", tag);
+        model.addAttribute("user", UserSecurityService.getCurrentUser());
         return "admin/editTag";
     }
 

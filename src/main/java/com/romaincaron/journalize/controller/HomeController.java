@@ -6,7 +6,10 @@ import com.romaincaron.journalize.model.Tag;
 import com.romaincaron.journalize.service.ArticleService;
 import com.romaincaron.journalize.service.CategoryService;
 import com.romaincaron.journalize.service.TagService;
+import com.romaincaron.journalize.service.UserSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +23,13 @@ public class HomeController {
     private ArticleService articleService;
     private TagService tagService;
     private CategoryService categoryService;
+    private UserSecurityService userSecurityService;
     @Autowired
-    public HomeController(ArticleService articleService, TagService tagService, CategoryService categoryService) {
+    public HomeController(ArticleService articleService, TagService tagService, CategoryService categoryService, UserSecurityService userSecurityService) {
         this.articleService = articleService;
         this.tagService = tagService;
         this.categoryService = categoryService;
+        this.userSecurityService = userSecurityService;
     }
 
     @GetMapping("")
@@ -44,7 +49,7 @@ public class HomeController {
         // lastArticles
         List<Article> lastArticles = articleService.getLast5Articles();
         model.addAttribute("lastArticles", lastArticles);
-
+        model.addAttribute("user", userSecurityService.getCurrentUser());
         return "index";
     }
 
@@ -54,6 +59,7 @@ public class HomeController {
         List<Article> last5Articles = articleService.getLast5Articles();
         model.addAttribute("articles", lastArticles);
         model.addAttribute("last5Articles", last5Articles);
+        model.addAttribute("user", userSecurityService.getCurrentUser());
         return "recent";
     }
 

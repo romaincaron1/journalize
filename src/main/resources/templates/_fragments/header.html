@@ -11,11 +11,11 @@
             <li class="nav-item mx-2">
                 <a class="nav-link" th:href="@{/recent}"><i class="fa-regular fa-clock"></i> Quoi de neuf ?</a>
             </li>
-            <li class="nav-item mx-2">
+            <li class="nav-item mx-2" th:each="role : ${user.roles}" th:if="${role.roleName == 'admin'}">
                 <a class="nav-link" th:href="@{/admin}"><i class="fa-solid fa-lock"></i> Admin</a>
             </li>
             <li class="nav-item mx-2">
-                <a class="nav-link" href="#"><i class="fa-solid fa-user mx-1"></i> Svein</a>
+                <a class="nav-link" th:href="@{/logout}"><i class="fa-solid fa-sign-out-alt mx-1"></i> Déconnexion</a>
             </li>
         </ul>
     </div>

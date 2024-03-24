@@ -42,9 +42,9 @@
         </div>
         <div class="row">
             <h1 class="my-3" th:text="${article.getTitle()}"></h1>
-            <div class="d-flex mb-4">
+            <div class="d-flex mb-4" th:if="${#strings.contains(user.roles, 'admin') or #lists.contains(user.articles, article)}">
                 <a th:href="@{/articles/add(articleId=${article.id}, categoryId=${article.getCategory().getId()})}" class="btn btn-secondary btn-sm text-light">
-                <i class="fa-solid fa-pen-nib"></i> Modifier
+                    <i class="fa-solid fa-pen-nib"></i> Modifier
                 </a>
                 <a th:href="@{/articles/delete(articleId=${article.id})}" class="btn btn-danger btn-sm mx-2 text-light">
                     <i class="fa-solid fa-trash"></i> Supprimer
@@ -79,38 +79,16 @@
                             </form>
                         </div>
                     </div>
-                    <div class="row mb-4">
+                    <div class="row" th:each="comment : ${article.getComments()}">
                         <div class="col-12">
                             <div class="card my-4">
                                 <div class="card-header">
-                                    Svein - <span class="small">Inscrit le 12/01/2024</span>
+                                    <span th:text="${comment.getUser().getUsername()}"></span> - <span class="small">Inscrit le <span th:text="${#dates.format(comment.getUser().getCreatedAt(), 'd/M/yyyy à H:mm')}"></span></span>
                                 </div>
                                 <div class="card-body">
                                     <blockquote class="blockquote mb-0">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                                        <footer class="blockquote-footer">02/03/2024 à 14:32</footer>
-                                    </blockquote>
-                                </div>
-                            </div>
-                            <div class="card my-4">
-                                <div class="card-header">
-                                    Svein - <span class="small">Inscrit le 12/01/2024</span>
-                                </div>
-                                <div class="card-body">
-                                    <blockquote class="blockquote mb-0">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                                        <footer class="blockquote-footer">02/03/2024 à 14:32</footer>
-                                    </blockquote>
-                                </div>
-                            </div>
-                            <div class="card my-4">
-                                <div class="card-header">
-                                    Svein - <span class="small">Inscrit le 12/01/2024</span>
-                                </div>
-                                <div class="card-body">
-                                    <blockquote class="blockquote mb-0">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                                        <footer class="blockquote-footer">02/03/2024 à 14:32</footer>
+                                        <p th:text="${comment.getContent()}"></p>
+                                        <footer class="blockquote-footer" th:text="${comment.getDate()}"></footer>
                                     </blockquote>
                                 </div>
                             </div>

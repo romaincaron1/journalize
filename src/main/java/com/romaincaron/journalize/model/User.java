@@ -1,13 +1,16 @@
 package com.romaincaron.journalize.model;
 
 import jakarta.persistence.*;
+import org.hibernate.Hibernate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity(name = "user")
 @Table(name = "user")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,11 +31,13 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private Set<Article> articles = new HashSet<>();
 
-    // comments
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private Set<Comment> comments = new HashSet<>();
 
+    private Date createdAt;
+
     public User() {
+        this.createdAt = new Date();
     }
 
     public void setId(Long id) {
@@ -51,8 +56,40 @@ public class User {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorityList = new ArrayList<>();
+        Hibernate.initialize(roles);
+        for (Role role : roles) {
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getRoleName());
+            authorityList.add(authority);
+        }
+
+        return authorityList;
     }
 
     public String getPassword() {
@@ -101,6 +138,14 @@ public class User {
     public void removeComment(Comment comment) {
         comments.remove(comment);
         comment.setUser(null);
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String toString() {

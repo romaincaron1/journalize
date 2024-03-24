@@ -3,9 +3,11 @@ package com.romaincaron.journalize.controller;
 import com.romaincaron.journalize.model.Article;
 import com.romaincaron.journalize.model.Category;
 import com.romaincaron.journalize.model.Tag;
+import com.romaincaron.journalize.model.User;
 import com.romaincaron.journalize.service.ArticleService;
 import com.romaincaron.journalize.service.CategoryService;
 import com.romaincaron.journalize.service.TagService;
+import com.romaincaron.journalize.service.UserSecurityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +21,13 @@ public class ArticleController {
     private ArticleService articleService;
     private TagService tagService;
     private CategoryService categoryService;
+    private UserSecurityService userSecurityService;
 
-    public ArticleController(ArticleService articleService, TagService tagService, CategoryService categoryService) {
+    public ArticleController(ArticleService articleService, TagService tagService, CategoryService categoryService, UserSecurityService userSecurityService) {
         this.articleService = articleService;
         this.categoryService = categoryService;
         this.tagService = tagService;
+        this.userSecurityService = userSecurityService;
     }
 
     @GetMapping("/articles/show")
@@ -32,6 +36,7 @@ public class ArticleController {
         article.incrementImpressions();
         articleService.persist(article);
         model.addAttribute("article", article);
+        model.addAttribute("user", userSecurityService.getCurrentUser());
         return "article/show";
     }
 
@@ -42,6 +47,7 @@ public class ArticleController {
         if (articleId != null) {
             model.addAttribute("article", articleService.getArticle(articleId));
         }
+        model.addAttribute("user", userSecurityService.getCurrentUser());
         return "article/add";
     }
 
@@ -50,6 +56,9 @@ public class ArticleController {
         Article article = new Article();
         article.setTitle(title);
         article.setContent(content);
+        User user = userSecurityService.getCurrentUser();
+        article.setUser(user);
+        user.addArticle(article);
         article.setCategory(categoryService.getCategory(categoryId));
         if (tags != null) {
             for (Long tagId : tags) {
@@ -59,7 +68,6 @@ public class ArticleController {
                 tagService.persist(tag);
             }
         }
-        article.setUser(null);
         article.setDate(new Date());
         article.setUpdatedAtNow();
 
@@ -98,6 +106,10 @@ public class ArticleController {
 
     @GetMapping("/articles/delete")
     public String deleteArticle(@RequestParam Long articleId) {
+        Article article = articleService.getArticle(articleId);
+        if (article.getUser() != null) {
+            article.getUser().removeArticle(article);
+        }
         articleService.delete(articleId);
         return "redirect:/";
     }
@@ -110,6 +122,7 @@ public class ArticleController {
         model.addAttribute("lastArticles", lastArticles);
         model.addAttribute("category", category);
         model.addAttribute("articles", articles);
+        model.addAttribute("user", userSecurityService.getCurrentUser());
         return "article/articles";
     }
 
