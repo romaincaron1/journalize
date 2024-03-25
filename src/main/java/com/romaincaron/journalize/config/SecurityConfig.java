@@ -36,7 +36,7 @@ public class SecurityConfig {
                         })
                 )
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers("/signup", "/registration").permitAll()
+                        .requestMatchers("/signup").permitAll()
                         .requestMatchers("/admin/**").hasAnyAuthority("admin")
                         .anyRequest().authenticated())
                 .userDetailsService(userSecurityService).build();

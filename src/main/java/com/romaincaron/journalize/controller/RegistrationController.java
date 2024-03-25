@@ -38,7 +38,6 @@ public class RegistrationController {
 
     @PostMapping("/login")
     public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
-        System.out.println("username: " + username);
         if (!username.isEmpty() && !password.isEmpty()) {
             return "redirect:/";
         } else {
